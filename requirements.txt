@@ -1,0 +1,12 @@
+# Testing
+nose>=1.0
+coverage>=3.4
+mocker>=1.0
+
+# Development
+flask>=0.7
+mongoalchemy>=0.9
+pymongo>=1.9
+
+# Documentation
+sphinx
