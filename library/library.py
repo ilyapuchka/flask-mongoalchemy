@@ -16,7 +16,7 @@ class Author(db.Document):
 
 class Book(db.Document):
     title = db.StringField()
-    author = db.DocumentField(Author)
+    author = db.ObjectIdField()
     year = db.IntField()
 
 @app.route('/author/new')
@@ -39,6 +39,22 @@ def list_authors():
     for author in authors:
         content += '<p>%s</p>' % author.name
     return content
+
+@app.route('/book/new')
+def new_book():
+	author = Author.query.filter(Author.name == request.args.get('author','')).first_or_404()
+	book = Book(title=request.args.get('title',''),author=author.mongo_id,year=int(request.args.get('year','2000')))
+	book.save()
+	return 'Saved :)'
+
+@app.route('/books/')
+def list_books():
+	books = Book.query.all()
+	content = '<p>Books:</p>'
+	for book in books:
+		author = Author.query.filter(Author.mongo_id == book.author).first()
+		content += '<p>"%s" by %s</p>' % (book.title, author.name)
+	return content
 
 if __name__ == '__main__':
     app.run()
